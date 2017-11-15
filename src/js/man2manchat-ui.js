@@ -15,7 +15,7 @@
     throw new Error("Unable to find chat templates!");
   }
 
-  function Man2ManChatUI(firebaseRef, el, options) {
+  function Man2ManChatUI(firebaseRef, el, userList, options) {
     var self = this;
 
     if (!firebaseRef) {
@@ -32,6 +32,7 @@
     this._el = el;
     this._user = null;
     this._chat = new Firechat(firebaseRef, options);
+    this._userList = userList;
 
     // A list of rooms to enter once we've made room for them (once we've hit the max room limit).
     this._roomQueue = [];
@@ -82,6 +83,7 @@
     this.$wrapper = $('#firechat');
     this.$roomList = $('#firechat-room-list');
     this.$unreadRoomList = $('#firechat-unread-room-list');
+    this.$allList = $('#firechat-tab-all-list');
     this.$tabList = $('#firechat-tab-list');
     this.$tabContent = $('#firechat-tab-content');
     this.$messages = {};
@@ -115,6 +117,7 @@
       this._bindForHeightChange();
       this._bindForTabControls();
       this._bindForRoomList();
+      this._bindForAllList();
       this._bindForUnreadRoomList();
       this._bindForUserRoomList();
       this._bindForUserSearch();
@@ -428,7 +431,8 @@
       $(this).addClass('active');
       $('#firechat-unread-room-list').hide();
       $('#firechat-tab-list').show();
-      $('.chat_search_box').css("visibility", 'inherit');
+      $('#firechat-tab-all-list').hide();
+      $('.chat_search_box').css("visibility", 'hidden');
 
       if ($(this).parent().hasClass('open')) {
         return;
@@ -464,6 +468,56 @@
     });
   };
 
+  /**
+   * Binds All list dropdown to populate user list.
+   */
+  Man2ManChatUI.prototype._bindForAllList = function() {
+    var self = this;
+
+    $('#firechat-btn-all-rooms').bind('click', function() {
+      $(this).parents('.chat-group').find('button').removeClass('active');
+      $(this).addClass('active');
+      $('#firechat-unread-room-list').hide();
+      $('#firechat-tab-list').hide();
+      $('#firechat-tab-all-list').show();
+      $('.chat_search_box').css("visibility", 'inherit');
+
+      if ($(this).parent().hasClass('open')) {
+        return;
+      }
+      var $this = $(this),
+          template = FirechatDefaultTemplates["templates/tab-menu-item.html"],
+          selectRoomListItem = function() {
+            var parent = $(this).parent(),
+                roomId = parent.data('room-id'),
+                roomName = parent.data('room-name');
+
+            if (self.$messages[roomId]) {
+              self.focusTab(roomId);
+            } else {
+              self._chat.enterRoom(roomId, roomName);
+            }
+            return false;
+          };
+
+      self.$allList.empty();
+      $.each(self._userList, function(index, user){
+        var room = [];
+        room.id   = "room-user-"+user.id;
+        room.type = "public";
+        room.name = user.name ? user.name : "不明のチャット";
+        room.isRoomOpen = false;
+        room.avatar = user.avatar ? user.avatar : self._defaultAvatar;
+        // if (room.type != "public") continue;
+        var $roomItem = $(template(room));
+        $roomItem.children('a').bind('click', selectRoomListItem);
+        self.$allList.append($roomItem.toggle(true));
+      });
+
+    });
+  };
+  
+
   Man2ManChatUI.prototype._bindForUnreadRoomList = function() {
     var self = this;
 
@@ -472,6 +526,7 @@
       $(this).addClass('active');
       $('#firechat-unread-room-list').show();
       $('#firechat-tab-list').hide();
+      $('#firechat-tab-all-list').hide();
       $('.chat_search_box').css("visibility", 'hidden');
 
       if ($(this).parent().hasClass('open')) {

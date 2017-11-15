@@ -411,8 +411,6 @@
 
         if(messageType == 'image'){
           message.image = messageContent;
-        }else if(messageType == 'file'){
-          message.file = messageContent;
         }else{
           message.message = messageContent;
         }
