@@ -1,28 +1,31 @@
 <div id="chat">
 
   <div class="col-md-3" id="chat_left">
-        <div class="chat_search_box col-md-12 hide">
+        <div class="chat_search_box col-md-12" style="visibility: hidden;">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" name="q">
+            <input type="text" class="form-control" placeholder="User" name="user">
+            <input type="text" class="form-control" placeholder="Property" name="property">
             <div class="input-group-btn">
               <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
             </div>
           </div>
         </div>
         <div class="chat-group col-sm-12">
-          <div class="col-sm-5">
+          <div class="col-sm-4">
             <button class="active" type="button" id="firechat-btn-unread-rooms">未読<span id="unread_count" class="chat_notification">0</span></button>
           </div>
-          <div class="col-sm-5 text-right">
-            <button class="" type="button" id="firechat-btn-rooms">All<span class="chat_notification hide">0</span></button>
+          <div class="col-sm-4 text-center">
+            <button class="" type="button" id="firechat-btn-rooms">Recent<span class="chat_notification hide">0</span></button>
+          </div>
+          <div class="col-sm-4 text-right">
+            <button class="" type="button" id="firechat-btn-all-rooms">All<span class="chat_notification hide">0</span></button>
           </div>
         </div>
         <div class="clearfix"></div>
 
         <ul class="list-group contact-list" id='firechat-unread-room-list'></ul>
         <ul class="list-group contact-list" id='firechat-tab-list' style="display: none;"></ul>
-
-
+        <ul class="list-group contact-list" id='firechat-tab-all-list' style="display: none;"></ul>
 
   </div>
   <div class="col-md-6" id="chat_middle">

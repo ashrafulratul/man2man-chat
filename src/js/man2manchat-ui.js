@@ -82,6 +82,7 @@
     this.$wrapper = $('#firechat');
     this.$roomList = $('#firechat-room-list');
     this.$unreadRoomList = $('#firechat-unread-room-list');
+    this.$allList = $('#firechat-tab-all-list');
     this.$tabList = $('#firechat-tab-list');
     this.$tabContent = $('#firechat-tab-content');
     this.$messages = {};
@@ -117,6 +118,7 @@
       this._bindForHeightChange();
       this._bindForTabControls();
       this._bindForRoomList();
+      this._bindForAllList();
       this._bindForUnreadRoomList();
       this._bindForUserRoomList();
       this._bindForUserSearch();
@@ -422,7 +424,8 @@
       $(this).addClass('active');
       $('#firechat-unread-room-list').hide();
       $('#firechat-tab-list').show();
-      $('.chat_search_box').css("visibility", 'inherit');
+      $('#firechat-tab-all-list').hide();
+      $('.chat_search_box').css("visibility", 'hidden');
 
       if ($(this).parent().hasClass('open')) {
         return;
@@ -458,6 +461,26 @@
     });
   };
 
+  /**
+   * Binds All list dropdown to populate user list.
+   */
+  Man2ManChatUI.prototype._bindForAllList = function() {
+    var self = this;
+
+    $('#firechat-btn-all-rooms').bind('click', function() {
+      $(this).parents('.chat-group').find('button').removeClass('active');
+      $(this).addClass('active');
+      $('#firechat-unread-room-list').hide();
+      $('#firechat-tab-list').hide();
+      $('#firechat-tab-all-list').show();
+      $('.chat_search_box').css("visibility", 'inherit');
+
+      if ($(this).parent().hasClass('open')) {
+        return;
+      }
+    });
+  };
+  
   Man2ManChatUI.prototype._bindForUnreadRoomList = function() {
     var self = this;
 
